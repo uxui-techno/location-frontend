@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Get Location</title>
+</head>
+<body>
+  <h1>Click to share your location</h1>
+  <button onclick="getLocation()">Share Location</button>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendPosition, showError);
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    function sendPosition(position) {
+      const data = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      };
+
+      fetch("https://your-backend-name.onrender.com/save-location", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(res => {
+        alert("Location saved!");
+      }).catch(err => {
+        alert("Failed to send location.");
+      });
+    }
+
+    function showError(error) {
+      alert("Error getting location: " + error.message);
+    }
+  </script>
+</body>
+</html>
