@@ -3,121 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Careers - Techno UI & UX Designs</title>
+  <title>Career at Techno UI & UX Designs</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+    }
+
+    .container {
       max-width: 600px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    form {
-      background: #fff;
-      padding: 20px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
+
+    h2 {
+      text-align: center;
+      color: #2d3748;
+    }
+
     label {
       display: block;
-      margin-top: 15px;
-      font-weight: bold;
+      margin-top: 20px;
+      color: #4a5568;
+      font-weight: 500;
     }
+
     input, select {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
       padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
+      margin-top: 5px;
+      border: 1px solid #cbd5e0;
       border-radius: 5px;
       font-size: 16px;
-      cursor: pointer;
+      background: #edf2f7;
     }
+
+    input[type="file"] {
+      background: #ffffff;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 30px;
+      padding: 12px;
+      background-color: #3182ce;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
     button:hover {
-      background-color: #45a049;
+      background-color: #2b6cb0;
+    }
+
+    .success {
+      color: green;
+      margin-top: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Join Techno UI & UX Designs</h2>
+    <form id="careerForm" enctype="multipart/form-data">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
 
-  <h1>Careers at Techno UI & UX Designs</h1>
-  <form id="careerForm">
-    <label for="name">Full Name:</label>
-    <input type="text" id="name" required>
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob" name="dob" required>
 
-    <label for="dob">Date of Birth:</label>
-    <input type="date" id="dob" required>
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender" required>
+        <option value="">-- Select --</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
 
-    <label for="gender">Gender:</label>
-    <select id="gender" required>
-      <option value="">Select</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-      <option value="Other">Other</option>
-    </select>
+      <label for="education">Highest Education</label>
+      <input type="text" id="education" name="education" required>
 
-    <label for="education">Highest Education:</label>
-    <input type="text" id="education" required>
+      <label for="marital">Marital Status</label>
+      <select id="marital" name="marital" required>
+        <option value="">-- Select --</option>
+        <option>Single</option>
+        <option>Married</option>
+        <option>Other</option>
+      </select>
 
-    <label for="marital">Marital Status:</label>
-    <select id="marital" required>
-      <option value="">Select</option>
-      <option value="Single">Single</option>
-      <option value="Married">Married</option>
-      <option value="Other">Other</option>
-    </select>
+      <label for="currentLocation">Current Location</label>
+      <input type="text" id="currentLocation" name="currentLocation" required>
 
-    <label for="preferred">Preferred Location:</label>
-    <input type="text" id="preferred" required>
+      <label for="preferredLocation">Preferred Location</label>
+      <input type="text" id="preferredLocation" name="preferredLocation" required>
 
-    <label for="resume">Attach Resume (PDF):</label>
-    <input type="file" id="resume" accept=".pdf" required>
+      <label for="resume">Upload Resume (PDF)</label>
+      <input type="file" id="resume" name="resume" accept=".pdf" required>
 
-    <button type="button" onclick="submitForm()">Submit Form</button>
-  </form>
+      <button type="submit">Submit Form</button>
+      <div id="message" class="success"></div>
+    </form>
+  </div>
 
   <script>
-    function submitForm() {
-      if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
-        return;
+    const form = document.getElementById('careerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('https://location-tracker-gmpf.onrender.com/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          message.textContent = 'Form submitted successfully!';
+          form.reset();
+        } else {
+          message.textContent = 'Error submitting the form.';
+        }
+      } catch (error) {
+        message.textContent = 'Server error. Please try again later.';
       }
-
-      navigator.geolocation.getCurrentPosition((position) => {
-        const formData = new FormData();
-        formData.append("name", document.getElementById("name").value);
-        formData.append("dob", document.getElementById("dob").value);
-        formData.append("gender", document.getElementById("gender").value);
-        formData.append("education", document.getElementById("education").value);
-        formData.append("marital", document.getElementById("marital").value);
-        formData.append("preferred", document.getElementById("preferred").value);
-        formData.append("latitude", position.coords.latitude);
-        formData.append("longitude", position.coords.longitude);
-        formData.append("resume", document.getElementById("resume").files[0]);
-
-        fetch("https://location-tracker-gmpf.onrender.com/submit-career-form", {
-          method: "POST",
-          body: formData,
-        })
-        .then(response => response.text())
-        .then(data => alert(data))
-        .catch(error => alert("Failed to submit form."));
-      }, (error) => {
-        alert("Unable to get location: " + error.message);
-      });
-    }
+    });
   </script>
 </body>
 </html>
